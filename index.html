@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>東京與首爾雙城大冒險 🌸❄️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #f8fafc; 
+            font-family: 'Zen Maru Gothic', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        details[open] summary ~ * { animation: slideDown 0.3s ease-out forwards; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        details[open] summary .chevron { transform: rotate(180deg); }
+        
+        .cute-checkbox:checked + div {
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+        .cute-checkbox:checked + div svg { display: block; }
+        
+        .wiggle { animation: wiggle 3s infinite ease-in-out; }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-24 selection:bg-purple-200">
+
+    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm px-4 py-3 border-b border-purple-100 rounded-b-3xl">
+        <div class="max-w-md mx-auto">
+            <div class="text-xs font-bold text-purple-600 mb-1 flex items-center gap-1">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-600"></span>
+                </span>
+                下個行程目標 / NEXT
+            </div>
+            <div class="flex justify-between items-end">
+                <div id="next-event-title" class="text-sm font-bold text-slate-800 truncate pr-2">載入中...</div>
+                <div id="countdown" class="text-lg font-black font-mono text-slate-900 tracking-tight shrink-0">--:--:--:--</div>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-md mx-auto px-4 pt-6">
+
+        <div class="flex justify-center items-center gap-2 mb-4 wiggle">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- 富士山與櫻花 -->
+                <path d="M10 80 L50 20 L90 80 Z" fill="#93c5fd" />
+                <path d="M36 41 L50 20 L64 41 Q57 48 50 43 Q43 48 36 41 Z" fill="#ffffff" />
+                <circle cx="80" cy="30" r="8" fill="#f472b6" opacity="0.8"/>
+                <circle cx="72" cy="25" r="6" fill="#f472b6" opacity="0.8"/>
+                <circle cx="85" cy="20" r="5" fill="#f472b6" opacity="0.8"/>
+            </svg>
+            <h1 class="text-2xl font-black text-slate-800 tracking-wide">日韓雙城大冒險</h1>
+        </div>
+        
+        <!-- 重大警告區塊 -->
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl mb-6 shadow-sm">
+            <h3 class="text-red-800 font-black text-sm flex items-center gap-1">🚨 行程深夜警報</h3>
+            <p class="text-xs text-red-700 mt-1 leading-relaxed">
+                <b>DAY 1 羽田抵達時間過晚：</b> 23:25 落地，出關已過午夜，往市區的電車全數收班。必須搭乘計程車或預約專車接送（詳見 DAY 1 交通比價）。
+            </p>
+        </div>
+
+        <details class="mb-6 bg-purple-50 rounded-2xl shadow-sm border border-purple-200 overflow-hidden" open>
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-purple-100 transition-colors">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">📝</span>
+                    <h2 class="text-lg font-black text-purple-900">行前破關待辦清單</h2>
+                </div>
+                <svg class="w-5 h-5 text-purple-500 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-purple-100">
+                <div class="space-y-3 mt-3">
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" id="todo-taxi" class="cute-checkbox hidden">
+                        <div class="w-5 h-5 rounded border-2 border-purple-300 bg-white flex items-center justify-center shrink-0 mt-0.5 transition-colors"><svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <div class="text-sm font-bold text-purple-900 group-hover:text-purple-700">預約 DAY 1 羽田機場 ➔ 本所吾妻橋「深夜接機專車」</div>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" id="todo-jrpass" class="cute-checkbox hidden">
+                        <div class="w-5 h-5 rounded border-2 border-purple-300 bg-white flex items-center justify-center shrink-0 mt-0.5 transition-colors"><svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <div class="text-sm font-bold text-purple-900 group-hover:text-purple-700">購買 JR 東京廣域周遊券 (連續3天：完美涵蓋越後湯澤、箱根與富士山河口湖)</div>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" id="todo-hakone" class="cute-checkbox hidden">
+                        <div class="w-5 h-5 rounded border-2 border-purple-300 bg-white flex items-center justify-center shrink-0 mt-0.5 transition-colors"><svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <div class="text-sm font-bold text-purple-900 group-hover:text-purple-700">購買箱根周遊券 (2日券，當地交通必備)</div>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" id="todo-vjw" class="cute-checkbox hidden">
+                        <div class="w-5 h-5 rounded border-2 border-purple-300 bg-white flex items-center justify-center shrink-0 mt-0.5 transition-colors"><svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <div class="text-sm font-bold text-purple-900 group-hover:text-purple-700">填寫日本 Visit Japan Web (VJW) 海關QR碼</div>
+                    </label>
+                    <label class="flex items-start gap-3 cursor-pointer group">
+                        <input type="checkbox" id="todo-keta" class="cute-checkbox hidden">
+                        <div class="w-5 h-5 rounded border-2 border-purple-300 bg-white flex items-center justify-center shrink-0 mt-0.5 transition-colors"><svg class="w-3 h-3 text-white hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <div class="text-sm font-bold text-purple-900 group-hover:text-purple-700">申請韓國 K-ETA 或 Q-Code (依韓國最新入境規定)</div>
+                    </label>
+                </div>
+            </div>
+        </details>
+
+        <h2 class="text-xl font-black mb-4 px-1 text-slate-800 flex items-center gap-2">
+            📅 每日戰鬥行程
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="wiggle"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        </h2>
+
+        <!-- DAY 1 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-blue-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-blue-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 1</div>
+                    <div class="font-bold text-slate-800">2/3 (三) 飛向東京夜</div>
+                </div>
+                <svg class="w-5 h-5 text-blue-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-blue-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">✈️</span></div>
+                        <div class="text-sm font-bold text-slate-800">13:45 - 18:10 香港 ➔ 仁川 (轉機)</div>
+                        <div class="text-xs text-slate-500 mt-1">OZ722 韓亞航空，於仁川機場享用晚餐</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">✈️</span></div>
+                        <div class="text-sm font-bold text-slate-800">21:30 - 23:25 仁川 ➔ 羽田機場 (HND)</div>
+                        <div class="text-xs text-slate-500 mt-1">抵達日本！準備極速通關。</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚖</span></div>
+                        <div class="text-sm font-bold text-red-600">00:30 (跨夜) 前往本所吾妻橋民宿</div>
+                        <div class="bg-blue-50 p-3 rounded-xl mt-2 text-xs text-slate-600 leading-relaxed border border-blue-200">
+                            <b>深夜交通比價 (羽田 ➔ 本所吾妻橋)：</b><br>
+                            🚕 <b>現場排計程車：</b> 深夜加成後約 10,000~13,000 日圓 (約 500~650 HKD)。優點是可能較便宜，缺點是深夜人多需排隊。<br>
+                            🚗 <b>預約專車接送：</b> 約 800 HKD。優點是司機舉牌等候、保證有車、直達民宿不迷路。若預算許可，跨國長途飛行後強烈建議花錢買安穩！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 2 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-cyan-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-cyan-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-cyan-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 2</div>
+                    <div class="font-bold text-slate-800">2/4 (四) 春日部小新朝聖</div>
+                </div>
+                <svg class="w-5 h-5 text-cyan-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-cyan-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚆</span></div>
+                        <div class="text-sm font-bold text-slate-800">09:30 - 10:30 出發前往春日部</div>
+                        <div class="text-xs text-slate-500 mt-1">從本所吾妻橋站搭乘「都營淺草線」，在「押上」轉乘「東武晴空塔線」直達春日部站。</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🎮</span></div>
+                        <div class="text-sm font-bold text-slate-800">11:00 - 14:00 打卡蠟筆小新 (LaLaGarden)</div>
+                        <div class="bg-cyan-50 p-3 rounded-xl mt-2 text-xs text-slate-600 leading-relaxed">
+                            📍 <b>推薦去處：</b> LaLaGarden 3樓的「蠟筆小新遊樂場」，有很多小新周邊與佈景，超好拍！<br>
+                            🍜 <b>午餐推薦：</b> 在商場內吃炸豬排或拉麵。
+                        </div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🗼</span></div>
+                        <div class="text-sm font-bold text-slate-800">15:30 - 20:00 晴空塔與淺草商圈</div>
+                        <div class="text-xs text-slate-500 mt-1">回到押上站逛晴空塔(Solamachi)，傍晚可步行去淺草寺看夜間點燈，人少且絕美。</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 3 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-emerald-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-emerald-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 3</div>
+                    <div class="font-bold text-slate-800">2/5 (五) 越後湯澤雪國行</div>
+                </div>
+                <svg class="w-5 h-5 text-emerald-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-emerald-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚄</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:30 - 10:15 出發：東京 ➔ 越後湯澤</div>
+                        <div class="text-xs text-slate-500 mt-1">從上野站搭乘「上越新幹線」直達越後湯澤站。(強烈建議使用 JR PASS)</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🏂</span></div>
+                        <div class="text-sm font-bold text-slate-800">11:00 - 15:00 GALA湯澤玩雪</div>
+                        <div class="bg-emerald-50 p-3 rounded-xl mt-2 text-xs text-slate-600 leading-relaxed">
+                            出站即是滑雪場！就算不滑雪，也可以搭纜車上去「玩雪盆」與敲愛之鐘，雪景無敵。
+                        </div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🍶</span></div>
+                        <div class="text-sm font-bold text-slate-800">15:30 - 17:30 越後湯澤站內爆吃</div>
+                        <div class="text-xs text-slate-500 mt-1 mb-2">預計停留 2 小時，車站本身就是景點！</div>
+                        <div class="bg-emerald-50 p-3 rounded-xl text-xs text-slate-600 leading-relaxed border border-emerald-100">
+                            💡 <b>必去/必吃推薦：</b><br>
+                            - <b>Ponshukan (ぽんしゅ館)：</b> 500日圓品嚐5種清酒販賣機。<br>
+                            - <b>爆彈飯糰：</b> 超巨大越光米飯糰，必吃！<br>
+                            - <b>名物 笹糰子：</b> 當地特色艾草紅豆麻糬。
+                        </div>
+                    </div>
+                    <div class="relative pb-2 mt-4">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚅</span></div>
+                        <div class="text-sm font-bold text-slate-800">18:00 - 19:30 返回東京市區</div>
+                        <div class="text-xs text-slate-500 mt-1">搭乘上越新幹線回到東京站，轉車回本所吾妻橋民宿休息。</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 4 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-amber-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-amber-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-amber-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 4</div>
+                    <div class="font-bold text-slate-800">2/6 (六) 箱根一日周遊</div>
+                </div>
+                <svg class="w-5 h-5 text-amber-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-amber-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚆</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:00 - 10:00 東京出發 ➔ 箱根</div>
+                        <div class="bg-amber-50 p-3 rounded-xl mt-2 text-xs text-slate-700 leading-relaxed">
+                            <b>交通方式：</b><br>
+                            從民宿出發至「新宿站」，搭乘 <b>小田急浪漫特快</b> 直達箱根湯本；或至「東京站」搭 <b>新幹線</b> 到小田原站再轉車。
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🌋</span></div>
+                        <div class="text-sm font-bold text-slate-800">10:30 - 16:30 箱根經典環線</div>
+                        <div class="text-xs text-slate-500 mt-1">
+                            搭乘登山電車 ➔ 登山纜車 ➔ <b>大涌谷 (必吃延壽黑玉子)</b> ➔ 蘆之湖海賊船。
+                        </div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">♨️</span></div>
+                        <div class="text-sm font-bold text-slate-800">17:00 - 20:00 日歸泡湯與返回東京</div>
+                        <div class="text-xs text-slate-500 mt-1">
+                            在箱根湯本找一間「日歸溫泉 (日帰り温泉)」泡個湯，吃完晚餐後搭車返回東京民宿。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 5 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-orange-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-orange-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 5</div>
+                    <div class="font-bold text-slate-800">2/7 (日) 推薦：冬日富士山河口湖</div>
+                </div>
+                <svg class="w-5 h-5 text-orange-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-orange-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">💡</span></div>
+                        <div class="text-sm font-bold text-slate-800">大師推薦路線：白雪富士山</div>
+                        <div class="text-xs text-slate-500 mt-1 mb-2">去看冬天的富士山！這天一樣能用「JR 東京廣域周遊券」搭乘昂貴的「富士回遊」特急列車，現賺車資！</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚆</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:30 - 10:25 新宿 ➔ 河口湖</div>
+                        <div class="text-xs text-red-600 font-bold mt-1">⚠️ 必做：需提前一個月線上劃位「富士回遊 (Fuji Excursion)」直達特急列車，極度熱門！</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🗻</span></div>
+                        <div class="text-sm font-bold text-slate-800">11:00 - 15:30 富士山絕景打卡</div>
+                        <div class="bg-orange-50 p-3 rounded-xl mt-2 text-xs text-slate-600 leading-relaxed border border-orange-100">
+                            - <b>大石公園：</b> 搭乘河口湖周遊巴士，這裡拍富士山與湖景最毫無死角。<br>
+                            - <b>下吉田 (新倉山淺間公園)：</b> 明信片上的絕景！五重塔配上背景的巨大雪白富士山。<br>
+                            - <b>午餐推薦：</b> 必吃名物「餺飥麵 (Houtou)」，熱呼呼的粗麵超適合冬天！
+                        </div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🌃</span></div>
+                        <div class="text-sm font-bold text-slate-800">16:30 - 18:30 返回東京市區</div>
+                        <div class="text-xs text-slate-500 mt-1">搭乘富士回遊或巴士回到東京，返回本所吾妻橋民宿整理行李，準備明天前往長野！</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 6 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-teal-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-teal-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-teal-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 6</div>
+                    <div class="font-bold text-slate-800">2/8 (一) 長野戶隱雪林秘境</div>
+                </div>
+                <svg class="w-5 h-5 text-teal-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-teal-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🧳</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:00 - 09:30 寄放大型行李 (非常重要)</div>
+                        <div class="bg-teal-50 p-3 rounded-xl mt-2 text-xs text-slate-700 leading-relaxed border border-teal-200">
+                            <b>任務：</b> 帶著所有行李前往 <b>羽田機場第3航廈</b> 的酒店寄放，只帶一個後背包裝換洗物去長野，這樣在雪地才不會崩潰。
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚄</span></div>
+                        <div class="text-sm font-bold text-slate-800">10:30 - 12:30 東京站 ➔ 長野站</div>
+                        <div class="text-xs text-slate-500 mt-1">轉乘「北陸新幹線」直達長野。抵達後先至 Courtland Hotel 寄放背包。</div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🌲</span></div>
+                        <div class="text-sm font-bold text-slate-800">13:30 - 17:30 戶隱神社與雪地體驗</div>
+                        <div class="text-xs text-slate-500 mt-1 mb-2">從長野站搭公車(約1小時)前往雪量超豐沛的「戶隱」。</div>
+                        <div class="bg-teal-50 p-3 rounded-xl text-xs text-slate-600 leading-relaxed">
+                            - <b>必吃推薦：</b> 日本三大蕎麥麵之一的「戶隱蕎麥麵」。<br>
+                            - <b>雪地體驗：</b> 前往「戶隱神社奧社」參道，走在被白雪覆蓋的巨大百年杉樹林中，極度夢幻！若想玩雪盆，也可至旁邊的「戶隱滑雪場」。<br>
+                            - <b>晚上：</b> 返回長野市區，晚上可去善光寺附近吃晚餐。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 7 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-fuchsia-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-fuchsia-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-fuchsia-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 7</div>
+                    <div class="font-bold text-slate-800">2/9 (二) 雪猴與神隱少女溫泉街</div>
+                </div>
+                <svg class="w-5 h-5 text-fuchsia-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-fuchsia-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🐒</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:30 - 12:30 尋找泡湯的雪猴</div>
+                        <div class="text-xs text-slate-500 mt-1">從長野站搭乘急行巴士直達「地獄谷野猿公苑」，需在雪中步行約 30 分鐘，就能看到世界唯一會泡溫泉的野生猴子！</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">♨️</span></div>
+                        <div class="text-sm font-bold text-slate-800">13:00 - 16:30 澀溫泉 (Shibu Onsen) 巡禮</div>
+                        <div class="bg-fuchsia-50 p-3 rounded-xl mt-2 text-xs text-slate-600 leading-relaxed border border-fuchsia-100">
+                            從雪猴公苑搭公車或步行下山，會抵達復古溫泉小鎮「澀溫泉」。<br>
+                            這裡的木造建築群激似 <b>《神隱少女》</b> 場景（歷史悠久的金具屋）。可以在這吃午餐，買條毛巾體驗當地的「九湯巡禮 (日歸溫泉)」。
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚄</span></div>
+                        <div class="text-sm font-bold text-slate-800">17:30 - 20:00 長野 ➔ 狂奔回羽田機場</div>
+                        <div class="text-xs text-slate-500 mt-1">玩到天黑！搭乘傍晚的北陸新幹線回東京站 ➔ 山手線到濱松町 ➔ 轉單軌電車抵達羽田機場 T3。</div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🛍️</span></div>
+                        <div class="text-sm font-bold text-slate-800">20:30 入住飯店與機場宵夜</div>
+                        <div class="text-xs text-slate-500 mt-1">
+                            入住航廈內的維拉芳泉酒店，商場有餐廳營業至晚間，也可直奔頂樓「泉天空之湯」洗去一身疲憊！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 8 -->
+        <details class="mb-4 bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-rose-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-rose-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 8</div>
+                    <div class="font-bold text-slate-800">2/10 (三) 飛向首爾吃烤肉</div>
+                </div>
+                <svg class="w-5 h-5 text-rose-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-rose-200 mt-4 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🛫</span></div>
+                        <div class="text-sm font-bold text-slate-800">08:40 - 11:15 羽田(HND) ➔ 金浦(GMP)</div>
+                        <div class="text-xs text-slate-500 mt-1">OZ1055 韓亞航空，從飯店走過去航廈超近！</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚊</span></div>
+                        <div class="text-sm font-bold text-slate-800">12:00 - 13:00 金浦機場 ➔ 雲西站放行李</div>
+                        <div class="bg-rose-50 p-3 rounded-xl mt-2 text-xs text-slate-700 leading-relaxed">
+                            <b>完美交通線：</b> 金浦機場站與雲西站都在 <b>「機場鐵道 AREX」</b> 沿線上！不需換車，搭乘一般列車約 30 分鐘即可抵達雲西站民宿放行李。
+                        </div>
+                    </div>
+                    <div class="relative pb-2">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🍖</span></div>
+                        <div class="text-sm font-bold text-slate-800">14:00 - 21:30 殺入首爾市中心玩爆</div>
+                        <div class="text-xs text-slate-500 mt-1 mb-2">再搭 AREX 往市區方向，約 45 分鐘抵達弘大入口站。</div>
+                        <div class="bg-red-50 p-3 rounded-xl text-xs text-slate-600 leading-relaxed border border-red-100">
+                            - <b>弘大商圈：</b> 買美妝、看街頭表演、吃糖葫蘆。<br>
+                            - <b>晚餐激推：</b> 正宗韓式烤五花肉配燒酒，或者韓式炸雞配啤酒 (Chimaek)！
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- DAY 9 -->
+        <details class="mb-10 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <summary class="cursor-pointer p-4 select-none flex items-center justify-between active:bg-slate-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="bg-slate-500 text-white text-xs font-black px-2.5 py-1 rounded-lg">DAY 9</div>
+                    <div class="font-bold text-slate-800">2/11 (四) 滿載而歸</div>
+                </div>
+                <svg class="w-5 h-5 text-slate-400 chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="p-4 pt-0 border-t border-slate-50">
+                <div class="relative pl-6 border-l-2 border-slate-200 mt-4 pb-2 space-y-6">
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🚊</span></div>
+                        <div class="text-sm font-bold text-slate-800">06:30 - 07:00 雲西 ➔ 仁川機場 (ICN)</div>
+                        <div class="text-xs text-slate-500 mt-1">住雲西的優勢！搭 AREX 只要 10 分鐘就到仁川機場，不用摸黑從首爾市區趕車。</div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[31px] bg-white rounded-full p-1"><span class="text-lg">🛬</span></div>
+                        <div class="text-sm font-bold text-slate-800">09:00 - 12:00 仁川飛往香港</div>
+                        <div class="text-xs text-slate-500 mt-1">帶著滿滿的戰利品與回憶，平安回家！🎉</div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <div class="mb-10 p-5 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl shadow-sm border border-indigo-100">
+            <h2 class="text-lg font-black mb-4 text-indigo-900 flex items-center gap-2">
+                🌸 行程總覽與打卡地圖
+            </h2>
+            
+            <div class="space-y-2 mb-6 text-sm font-bold text-indigo-800 bg-white/60 p-4 rounded-xl">
+                <div class="flex justify-between border-b border-indigo-100/50 pb-1"><span>2/3 - 2/4</span><span>東京 (小新/淺草)</span></div>
+                <div class="flex justify-between border-b border-indigo-100/50 pb-1"><span>2/5</span><span>越後湯澤 (玩雪/清酒)</span></div>
+                <div class="flex justify-between border-b border-indigo-100/50 pb-1"><span>2/6</span><span>箱根 (大涌谷/海賊船)</span></div>
+                <div class="flex justify-between border-b border-indigo-100/50 pb-1"><span>2/7</span><span>河口湖 (冬日富士山)</span></div>
+                <div class="flex justify-between border-b border-indigo-100/50 pb-1"><span>2/8 - 2/9</span><span>長野 (戶隱/雪猴/溫泉)</span></div>
+                <div class="flex justify-between"><span>2/10 - 2/11</span><span>首爾 (烤肉/血拚)</span></div>
+            </div>
+
+            <!-- 純手工 SVG：融合富士山與首爾塔的意象 -->
+            <div class="relative w-full aspect-[16/9] bg-white/80 rounded-xl flex flex-col items-center justify-center border border-indigo-100 shadow-sm p-4 text-center">
+                <svg width="150" height="100" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="wiggle">
+                    <!-- 左邊富士山 -->
+                    <path d="M10 90 L45 30 L80 90 Z" fill="#93c5fd" />
+                    <path d="M33 50 L45 30 L57 50 Q51 55 45 52 Q39 55 33 50 Z" fill="#ffffff" />
+                    <!-- 右邊首爾塔意象 -->
+                    <path d="M115 90 L110 50 L115 45 L120 50 L115 90 Z" fill="#94a3b8" />
+                    <path d="M114 45 L114 20 L116 20 L116 45 Z" fill="#475569" />
+                    <circle cx="115" cy="45" r="4" fill="#ef4444" />
+                    <!-- 飛機軌跡 -->
+                    <path d="M30 30 Q75 -10 120 20" stroke="#c084fc" stroke-width="2" stroke-dasharray="4 4" fill="none" stroke-linecap="round"/>
+                    <text x="75" y="15" font-size="12" fill="#8b5cf6">✈️</text>
+                    <!-- 裝飾 -->
+                    <circle cx="20" cy="40" r="3" fill="#f472b6" opacity="0.6"/>
+                    <circle cx="90" cy="70" r="4" fill="#fde047" opacity="0.8"/>
+                    <circle cx="130" cy="60" r="2" fill="#f472b6" opacity="0.6"/>
+                </svg>
+                <div class="mt-2 text-indigo-900 font-black text-lg">🌸 日韓跨國大亂鬥 🌸</div>
+                <div class="text-indigo-500 text-xs font-bold mt-1">Tokyo ✈️ Seoul 2027</div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const events = [
+            { time: "2027-02-03T13:45:00+08:00", title: "起飛：香港飛仁川" },        // DAY 1 (HKT)
+            { time: "2027-02-03T21:30:00+09:00", title: "轉機：仁川飛羽田" },        // DAY 1 (KST/JST)
+            { time: "2027-02-05T08:30:00+09:00", title: "新幹線：前往越後湯澤" },    // DAY 3 (JST)
+            { time: "2027-02-06T08:00:00+09:00", title: "一日遊：出發前往箱根" },    // DAY 4 (JST)
+            { time: "2027-02-07T08:30:00+09:00", title: "富士回遊：前往河口湖" },    // DAY 5 (JST)
+            { time: "2027-02-08T10:30:00+09:00", title: "新幹線：前往長野" },        // DAY 6 (JST)
+            { time: "2027-02-10T08:40:00+09:00", title: "起飛：羽田飛金浦" },        // DAY 8 (JST)
+            { time: "2027-02-11T09:00:00+09:00", title: "起飛：仁川飛香港" },        // DAY 9 (KST)
+        ];
+
+        function updateCountdown() {
+            const now = new Date();
+            const nextEvent = events.find(e => new Date(e.time) > now);
+
+            if (nextEvent) {
+                document.getElementById('next-event-title').innerText = nextEvent.title;
+                const targetTime = new Date(nextEvent.time);
+                
+                const diff = targetTime - now;
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24).toString().padStart(2, '0');
+                const m = Math.floor((diff / 1000 / 60) % 60).toString().padStart(2, '0');
+                const s = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+
+                document.getElementById('countdown').innerHTML = `<span class="text-xs mr-1 text-slate-500 font-normal">倒數</span>${d}<span class="text-xs mx-1 text-slate-400 font-normal">天</span>${h}:${m}:${s}`;
+            } else {
+                document.getElementById('next-event-title').innerText = "旅程已圓滿結束 🎉";
+                document.getElementById('countdown').innerText = "00:00";
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function initTodos() {
+            const savedTodos = JSON.parse(localStorage.getItem('tokyoSeoulTripTodos')) || {};
+            const checkboxes = document.querySelectorAll('.cute-checkbox');
+            
+            checkboxes.forEach(cb => {
+                if (savedTodos[cb.id]) cb.checked = true;
+                
+                cb.addEventListener('change', (e) => {
+                    savedTodos[e.target.id] = e.target.checked;
+                    localStorage.setItem('tokyoSeoulTripTodos', JSON.stringify(savedTodos));
+                });
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initTodos();
+        });
+    </script>
+</body>
+</html>
